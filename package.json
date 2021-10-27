@@ -11,6 +11,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "@nastyox/rando.js": "^2.0.5",
     "sass": "^1.43.3",
     "sass-loader": "7",
     "vue": "^2.5.2"

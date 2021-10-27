@@ -1,6 +1,6 @@
 <template>
   <div class="main">
-    <InteractivePrompt />
+    <InteractivePrompt :num="4" />
   </div>
 </template>
 
