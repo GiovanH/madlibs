@@ -1,5 +1,5 @@
 <template>
-  <div class="radiovert" :data-value="this.subset[index]">
+  <div class="radiovert" :data-value="subset[index]" :style="{'margin-top': index*-20 + 'px'}">
     <button @click="setList">Random</button>
     <label v-for="(choice, i) in subset" :key="i">
       <input type="radio" :value="i" v-model="index"/> {{choice}}

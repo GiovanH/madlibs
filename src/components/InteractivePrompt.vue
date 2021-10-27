@@ -1,11 +1,11 @@
 <template>
   <div class="prompt">
     <span>A game</span>
-    <template v-for="(frag, i) in fragmentsSubset">
-      <template v-for="(lex, j) in frag">
+    <template v-for="(lex, i) in fragmentsSubset">
+      <!-- <template v-for="(lex, j) in frag"> -->
         <span v-if="typeof lex === 'string'" v-text="lex" :key="`${lex}${i}m${j}`"/>
         <Selector v-else-if="Array.isArray(lex)" :choices="lex" :num="3" :key="`c${lex[0]}${i}m${j}`"/>
-      </template>
+      <!-- </template> -->
     </template>
     <button @click="setList">Random</button>
   </div>
@@ -27,15 +27,20 @@ export default {
       fragmentsSubset: [],
       temp: [],
       wordlists: {
+        genre: [
+          "Puzzle platformer"
+        ],
         game: [
           "Undertale",
           "Chrono Trigger",
           "Sokoban",
-          "F-Zero"
+          "F-Zero",
+          "Downwell",
+          "Device 9",
+
         ],
         concept: [
           "Abandonment",
-          "Abatement",
           "Hedging",
           "Convergence",
           "Uncertainty",
@@ -44,11 +49,11 @@ export default {
           "Truth",
           "Robots"
         ],
-        genre: [
+        setting: [
           "Fantasy",
           "Sci-fi",
           "Post-apocolyptic",
-          "High fantasy"
+          "High fantasy",
         ]
       }
     }
@@ -56,12 +61,13 @@ export default {
   computed: {
     fragments() {
       return [
-        [" with gameplay like", this.wordlists.game],
-        [" with an engine like", this.wordlists.game],
-        [" with an theme like", this.wordlists.game, "'s"],
-        [" that's about", this.wordlists.concept],
-        [" that touches on", this.wordlists.concept],
-        [" set in a", this.wordlists.genre, " theme"],
+        [" ", "WORD_WITH", this.wordlists.genre, "mechanics"],
+        [" ", "WORD_WITH", " gameplay like", this.wordlists.game],
+        [" ", "WORD_WITH", " an engine like", this.wordlists.game],
+        [" ", "WORD_WITH", " a theme like", this.wordlists.game, "'s"],
+        [" ", "WORD_THAT", " is about", this.wordlists.concept],
+        [" ", "WORD_THAT", " touches on", this.wordlists.concept],
+        [" set in a", this.wordlists.setting, " setting"],
       ]
     }
   },
@@ -69,7 +75,22 @@ export default {
     setList(){
       // let fragments = [...this.fragments]
       // this.fragmentsSubset = [fragments.shift(1), ...randoSequence(fragments).map(o => o.value).slice(-this.num)]
-      this.fragmentsSubset = randoSequence(this.fragments).map(o => o.value).slice(-this.num)
+      this.fragmentsSubset = randoSequence(this.fragments).map(o => o.value).slice(-this.num).flat()
+
+      let prev_conjunction = ""
+      for (let i = 0; i < this.fragmentsSubset.length; i++) {
+        let lex = this.fragmentsSubset[i]
+        if (lex == "WORD_WITH") {
+          if (prev_conjunction == "WORD_WITH") this.fragmentsSubset[i] = "and"
+          else this.fragmentsSubset[i] = "with"
+          prev_conjunction = "WORD_WITH"
+        }
+        else if (lex == "WORD_THAT") {
+          if (prev_conjunction == "WORD_THAT") this.fragmentsSubset[i] = "and"
+          else this.fragmentsSubset[i] = "that"
+          prev_conjunction = "WORD_THAT"
+        }
+      }
     }
   },
   mounted() {
